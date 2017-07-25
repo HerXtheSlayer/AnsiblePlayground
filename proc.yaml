@@ -1,19 +1,19 @@
----
-- hosts: ccs
-  remote_user: sysomc
+- hosts: raspberry
 
-tasks:
-- name: get users
-  shell: tail /etc/passwd|cut -d':' -f1
-  register: users
-- debug: var=users
+  tasks:
+  - name: get users
+    shell: tail /etc/passwd|cut -d':' -f1
+    register: users
+  - debug: var=users.stdout_lines
+  #- debug: msg="{{ users.stderr }}"
+  
+  - name: get processes
+    shell: "echo ps -fu {{ users.stdout_lines }}"
+    #with_items:
+    #- "{{ users }}"
+    register: proc
+  - debug: var=proc.stdout_lines
 
-- name: get processes
-  shell: ps -fu "{{ item }}"
-  with_items:
-  - "{{ users }}"
-  register: proc
-- debug: var=proc
 
 
 
