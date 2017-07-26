@@ -1,3 +1,5 @@
+# test
+---
 - hosts: raspberry
 
   tasks:
@@ -17,20 +19,21 @@
 
 
 
-system:
+# system
 ---
-- hosts: vendor1
-  remote_user: sysomc
+- hosts: ccs
 
   tasks:
   - name: get users
     shell: tail /etc/passwd|cut -d':' -f1
     register: users
-  - debug: var=users
+  #- debug: var=users.stdout_lines
+  #- debug: msg="{{ users.stderr }}"
   
   - name: get processes
-    shell: ps -fu "{{ item }}"
+    shell: "ps -fu {{ item }}"
     with_items:
-    - "{{ users }}"
+    - "{{ users.stdout_lines }}"
     register: proc
-  - debug: var=proc
+  - debug: 
+     msg: "{{ proc.stdout_lines }}"
