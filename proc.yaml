@@ -27,13 +27,12 @@
   - name: get users
     shell: tail /etc/passwd|cut -d':' -f1
     register: users
-  #- debug: var=users.stdout_lines
-  #- debug: msg="{{ users.stderr }}"
   
   - name: get processes
     shell: "ps -fu {{ item }}"
     with_items:
     - "{{ users.stdout_lines }}"
     register: proc
-  - debug: 
-     msg: "{{ proc.stdout_lines }}"
+    ignore_errors: True
+  - local_action: copy content="{{ proc }}" dest="./{{ inventory_hostname }}.txt"
+  
