@@ -1,0 +1,17 @@
+---
+- hosts: omapp
+  remote_user: sysomc
+  become: true
+  become_user: see
+  become_method: sudo
+
+  vars_files: 
+  - vars/ven1_pwd.yml
+
+  tasks:
+  - name: Check Online Mediation Version
+    slurp:
+     src: /home/see/nginrun/lib/ocg_version.dat
+    register: slurpfile
+
+  - debug: msg="{{ slurpfile['content'] | b64decode }}"
