@@ -1,0 +1,28 @@
+---
+- hosts: ts3inssv109
+  become: yes
+  become_user: see
+
+  tasks:
+  - name: Check Online Mediation Version
+    slurp:
+      src: /home/see/nginrun/lib/ocg_version.dat
+    register: slurpfile
+
+  - local_action: copy content="{{ slurpfile | b64decode }}" dest="./{{ inventory_hostname }}_omver.txt"
+
+
+
+
+---
+- hosts: ts3inssv109
+  remote_user: see
+
+  tasks:
+  - name: Check Online Mediation Version
+    slurp:
+     src: /home/see/nginrun/lib/ocg_version.dat
+    register: slurpfile
+
+  - debug: 
+      msg: "{{ slurpfile['content'] | quote }}"
