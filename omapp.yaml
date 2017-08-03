@@ -1,0 +1,13 @@
+---
+- hosts: omapp
+  remote_user: see
+
+  tasks:
+  - name: Check Online Mediation Version
+    slurp:
+     src: /home/see/nginrun/lib/ocg_version.dat
+    register: omver
+
+  - debug: 
+      msg: "{{ omver.content | b64decode }}"
+  - local_action: copy content="{{ omver.content | b64decode }}" dest=".tmp/omver.txt"
