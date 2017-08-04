@@ -1,6 +1,11 @@
 ---
 - hosts: omapp
-  remote_user: see
+  become: true
+  become_user: see 
+  become_method: su
+  become_pass: "{{ see_become_pass }}"
+
+  include_vars: ~/ansible/host_vars/ts3inssv109.yml
 
   tasks:
   - name: Check Online Mediation Version
@@ -8,6 +13,11 @@
      src: /home/see/nginrun/lib/ocg_version.dat
     register: omver
 
+  - name: Check ONIP Version
+    shell: /home/see/nginrun/bin/bodaf/gv
+    register: gvver
+  
   - debug: 
-      msg: "{{ omver.content | b64decode }}"
+      msg: "{{ gvver.stdout }}"
+
   - local_action: copy content="{{ omver.content | b64decode }}" dest=".tmp/omver.txt"
