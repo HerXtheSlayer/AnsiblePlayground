@@ -21,3 +21,29 @@
       msg: "{{ gvver.stdout }}"
 
   - local_action: copy content="{{ omver.content | b64decode }}" dest=".tmp/omver.txt"
+
+
+---
+- hosts: omapp
+  become: true
+  become_user: see
+  become_method: su
+  ansible_become_pass: "{{ see_become_pass }}"
+
+- include: ~/ansible/host_vars/ts3inssv109.yml
+  tags: [see-become-pass]
+
+  tasks:
+  - name: Check Online Mediation Version
+    slurp:
+     src: /home/see/nginrun/lib/ocg_version.dat
+    register: omver
+
+  - name: Check ONIP Version
+    shell: /home/see/nginrun/bin/bodaf/gv
+    register: gvver
+  
+  - debug: 
+      msg: "{{ gvver.stdout }}"
+
+  - local_action: copy content="{{ omver.content | b64decode }}" dest=".tmp/omver.txt"
