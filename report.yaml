@@ -1,0 +1,26 @@
+--- 
+- hosts: all 
+   tasks: 
+   - name: Check if reboot is needed 
+     stat: path=/var/run/reboot-required 
+     register: need_reboot 
+
+   - name: Generate report 
+     template: 
+       src=report.j2 
+       dest=report.txt 
+     deletate_to: localhost 
+     run_once: true 
+
+
+*report.j2:* 
+Check 1 need reboot 
+{% for i in play_hosts | sort %} 
+{{ i }}: {{ hostvars[i]['need_reboot']['stat']['exists'] | 
+ternary('Yes', 'No') }} 
+{% endfor %} 
+
+Check 2 swap used 
+{% for i in play_hosts | sort %} 
+{{ i }}: {{ hostvars[i]['ansible_memory_mb']['swap']['used'] }} MB 
+{% endfor %} 
