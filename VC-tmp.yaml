@@ -1,0 +1,12 @@
+---
+  - name: Version Check for Vendor1 Environment
+    hosts: all
+
+    roles:
+      - uapp
+
+  - name: Write TMP files
+    hosts: localhost
+    tasks:
+    - debug: var=hostvars['uapp']['uappver']
+    - local_action: copy content="{{ uappver.stdout_lines }}" dest=".tmp/uapp.txt"
